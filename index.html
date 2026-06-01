@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Practice</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<h1>English Time Practice</h1>
+
+<canvas id="clock" width="300" height="300"></canvas>
+
+<div class="buttons">
+<button onclick="newTime()">New Time</button>
+<button onclick="speakAnswer()">🔊 Listen</button>
+<button onclick="showAnswer()">👁 Show Answer</button>
+</div>
+
+<input id="answer" placeholder="Type the time in a full sentence">
+<button onclick="checkAnswer()">Check Answer</button>
+
+<div id="feedback"></div>
+<div id="answers"></div>
+
+<h3>Score</h3>
+<p>Correct: <span id="correct">0</span></p>
+<p>Incorrect: <span id="incorrect">0</span></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
