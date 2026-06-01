@@ -1,6 +1,3 @@
-const canvas = document.getElementById("clock");
-const ctx = canvas.getContext("2d");
-
 let currentHour = 3;
 let currentMinute = 15;
 let validAnswers = [];
@@ -10,69 +7,11 @@ let incorrect = 0;
 
 const nums = ["twelve", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"];
 
-function drawClock(hour, minute) {
-  ctx.clearRect(0, 0, 300, 300);
-
-  // Draw clock circle
-  ctx.beginPath();
-  ctx.arc(150, 150, 140, 0, Math.PI * 2);
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Draw center dot
-  ctx.beginPath();
-  ctx.arc(150, 150, 5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Draw numbers
-  ctx.font = "bold 16px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = "#000";
-
-  for (let n = 1; n <= 12; n++) {
-    let ang = n * Math.PI / 6;
-    ctx.fillText(n, 150 + 110 * Math.sin(ang), 150 - 110 * Math.cos(ang));
-  }
-
-  // Draw hour markers
-  ctx.strokeStyle = "#000";
-  for (let i = 0; i < 12; i++) {
-    let ang = i * Math.PI / 6;
-    let x1 = 150 + 130 * Math.sin(ang);
-    let y1 = 150 - 130 * Math.cos(ang);
-    let x2 = 150 + 120 * Math.sin(ang);
-    let y2 = 150 - 120 * Math.cos(ang);
-    
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  // Calculate angles
-  let minuteAngle = (minute * Math.PI / 30);
-  let hourAngle = ((hour % 12) + minute / 60) * Math.PI / 6;
-
-  // Draw hour hand (shorter, thicker)
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 6;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.moveTo(150, 150);
-  ctx.lineTo(150 + 60 * Math.sin(hourAngle), 150 - 60 * Math.cos(hourAngle));
-  ctx.stroke();
-
-  // Draw minute hand (longer, thinner)
-  ctx.strokeStyle = "#555";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(150, 150);
-  ctx.lineTo(150 + 90 * Math.sin(minuteAngle), 150 - 90 * Math.cos(minuteAngle));
-  ctx.stroke();
-
-  ctx.lineWidth = 1;
+function updateDigitalClock(hour, minute) {
+  // Pad with zeros
+  const h = String(hour === 0 ? 12 : hour).padStart(2, '0');
+  const m = String(minute).padStart(2, '0');
+  document.getElementById("digitalClock").textContent = `${h}:${m}`;
 }
 
 function generateAnswers(h, m) {
@@ -83,19 +22,29 @@ function generateAnswers(h, m) {
   let digital = `it is ${timeString}`;
   answers.push(digital);
   answers.push(digital.replace("it is", "it's"));
+  answers.push(digital.replace("it is", "its"));
+  answers.push(digital.replace("it is", "it´s")); // Acute accent
 
   // Special cases for quarters and half
   if (m === 15) {
     answers.push(`it is a quarter past ${nums[h % 12]}`);
     answers.push(`it's a quarter past ${nums[h % 12]}`);
+    answers.push(`its a quarter past ${nums[h % 12]}`);
+    answers.push(`it´s a quarter past ${nums[h % 12]}`);
   } else if (m === 30) {
     answers.push(`it is half past ${nums[h % 12]}`);
     answers.push(`it's half past ${nums[h % 12]}`);
+    answers.push(`its half past ${nums[h % 12]}`);
+    answers.push(`it´s half past ${nums[h % 12]}`);
   } else if (m === 45) {
     answers.push(`it is a quarter to ${nums[(h + 1) % 12]}`);
     answers.push(`it's a quarter to ${nums[(h + 1) % 12]}`);
+    answers.push(`its a quarter to ${nums[(h + 1) % 12]}`);
+    answers.push(`it´s a quarter to ${nums[(h + 1) % 12]}`);
     answers.push(`it is fifteen to ${nums[(h + 1) % 12]}`);
     answers.push(`it's fifteen to ${nums[(h + 1) % 12]}`);
+    answers.push(`its fifteen to ${nums[(h + 1) % 12]}`);
+    answers.push(`it´s fifteen to ${nums[(h + 1) % 12]}`);
   }
 
   // Past/To formats for other minutes
@@ -103,12 +52,16 @@ function generateAnswers(h, m) {
     // "X past Y" format for 1-29 minutes
     answers.push(`it is ${minuteWord(m)} past ${nums[h % 12]}`);
     answers.push(`it's ${minuteWord(m)} past ${nums[h % 12]}`);
+    answers.push(`its ${minuteWord(m)} past ${nums[h % 12]}`);
+    answers.push(`it´s ${minuteWord(m)} past ${nums[h % 12]}`);
   } else if (m > 30 && m !== 45) {
     // "X to Y" format for 31-59 minutes
     let minutesTo = 60 - m;
     let nextHour = (h + 1) % 12;
     answers.push(`it is ${minuteWord(minutesTo)} to ${nums[nextHour]}`);
     answers.push(`it's ${minuteWord(minutesTo)} to ${nums[nextHour]}`);
+    answers.push(`its ${minuteWord(minutesTo)} to ${nums[nextHour]}`);
+    answers.push(`it´s ${minuteWord(minutesTo)} to ${nums[nextHour]}`);
   }
 
   return answers.map(x => normalize(x));
@@ -152,7 +105,8 @@ function timeWords(h, m) {
 
 function normalize(text) {
   return text.toLowerCase()
-    .replace(/[.,!?'"]/g, "")
+    .replace(/[´']/g, "'")  // Normalize both acute accent and apostrophe to standard apostrophe
+    .replace(/[.,!?"]/g, "")  // Remove other punctuation but keep apostrophes
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -163,8 +117,10 @@ function newTime() {
   currentMinute = Math.floor(Math.random() * 60);
 
   validAnswers = generateAnswers(currentHour, currentMinute);
+  // Remove duplicates after normalization
+  validAnswers = [...new Set(validAnswers)];
 
-  drawClock(currentHour, currentMinute);
+  updateDigitalClock(currentHour, currentMinute);
 
   document.getElementById("answer").value = "";
   document.getElementById("feedback").innerHTML = "";
