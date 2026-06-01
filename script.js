@@ -86,8 +86,8 @@ function timeWords(h, m) {
   if (m === 0) return `${hword} o'clock`;
 
   const minuteWords = {
-    0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "oh seven",
-    8: "eight", 9: "oh nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen",
+    0: "oh zero", 1: "oh one", 2: "oh two", 3: "oh three", 4: "oh four", 5: "oh five", 6: "oh six", 7: "oh seven",
+    8: "oh eight", 9: "oh nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen",
     14: "fourteen", 15: "fifteen", 16: "sixteen", 17: "seventeen", 18: "eighteen",
     19: "nineteen", 20: "twenty", 21: "twenty one", 22: "twenty two", 23: "twenty three",
     24: "twenty four", 25: "twenty five", 26: "twenty six", 27: "twenty seven",
@@ -106,7 +106,7 @@ function timeWords(h, m) {
 function normalize(text) {
   return text.toLowerCase()
     .replace(/[´']/g, "'")  // Normalize both acute accent and apostrophe to standard apostrophe
-    .replace(/[.,!?"]/g, "")  // Remove other punctuation but keep apostrophes
+    .replace(/[.,!?"\-]/g, "")  // Remove punctuation including hyphens
     .replace(/\s+/g, " ")
     .trim();
 }
