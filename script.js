@@ -47,7 +47,7 @@ function generateAnswers(h, m) {
     answers.push(`it´s fifteen to ${nums[(h + 1) % 12]}`);
   }
 
-  // Past/To formats for other minutes
+  // Past/To formats for other minutes (WITHOUT the word "minutes")
   if (m > 0 && m < 30 && m !== 15) {
     // "X past Y" format for 1-29 minutes
     answers.push(`it is ${minuteWord(m)} past ${nums[h % 12]}`);
@@ -69,16 +69,16 @@ function generateAnswers(h, m) {
 
 function minuteWord(m) {
   const words = {
-    1: "one minute", 2: "two minutes", 3: "three minutes", 4: "four minutes",
-    5: "five minutes", 6: "six minutes", 7: "seven minutes", 8: "eight minutes",
-    9: "nine minutes", 10: "ten minutes", 11: "eleven minutes", 12: "twelve minutes",
-    13: "thirteen minutes", 14: "fourteen minutes", 15: "fifteen minutes", 16: "sixteen minutes",
-    17: "seventeen minutes", 18: "eighteen minutes", 19: "nineteen minutes", 20: "twenty minutes",
-    21: "twenty one minutes", 22: "twenty two minutes", 23: "twenty three minutes", 24: "twenty four minutes",
-    25: "twenty five minutes", 26: "twenty six minutes", 27: "twenty seven minutes", 28: "twenty eight minutes",
-    29: "twenty nine minutes"
+    1: "one", 2: "two", 3: "three", 4: "four",
+    5: "five", 6: "six", 7: "seven", 8: "eight",
+    9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
+    13: "thirteen", 14: "fourteen", 15: "fifteen", 16: "sixteen",
+    17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
+    21: "twenty one", 22: "twenty two", 23: "twenty three", 24: "twenty four",
+    25: "twenty five", 26: "twenty six", 27: "twenty seven", 28: "twenty eight",
+    29: "twenty nine"
   };
-  return words[m] || `${m} minutes`;
+  return words[m] || `${m}`;
 }
 
 function timeWords(h, m) {
@@ -167,14 +167,12 @@ function resetScore() {
   document.getElementById("incorrect").innerText = "0";
 }
 
-// Allow pressing Enter to check answer and get next time
+// Allow pressing Enter to check answer only (no auto-advance)
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("answer").addEventListener("keypress", function(e) {
     if (e.key === "Enter") {
-      if (checkAnswer()) {
-        document.getElementById("answer").value = "";
-        newTime();
-      }
+      checkAnswer();
+      // Answer input stays visible - student must click "New Time" to proceed
     }
   });
 });
