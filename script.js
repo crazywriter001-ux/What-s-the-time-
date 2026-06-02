@@ -133,20 +133,20 @@ function checkAnswer() {
 
   if (user === "") {
     document.getElementById("feedback").innerHTML = "⚠️ Please type an answer";
-    return;
+    return false;
   }
 
   if (validAnswers.includes(user)) {
     correct++;
     document.getElementById("feedback").innerHTML = "✅ Correct";
     document.getElementById("correct").innerText = correct;
+    return true;
   } else {
     incorrect++;
     document.getElementById("feedback").innerHTML = "❌ Incorrect";
     document.getElementById("incorrect").innerText = incorrect;
+    return false;
   }
-
-  document.getElementById("answer").value = "";
 }
 
 function showAnswer() {
@@ -171,8 +171,10 @@ function resetScore() {
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("answer").addEventListener("keypress", function(e) {
     if (e.key === "Enter") {
-      checkAnswer();
-      newTime();
+      if (checkAnswer()) {
+        document.getElementById("answer").value = "";
+        newTime();
+      }
     }
   });
 });
